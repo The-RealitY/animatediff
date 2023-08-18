@@ -60,7 +60,7 @@ def send_file(file_path: Path):  # Use Path type annotation
             print("Only MP4 files are allowed.")
             return False
 
-        api_url = "http://192.168.15.12:5000/api/v1/t2v"
+        api_url = "https://api.reality.org.in/api/v1/t2v"
         headers = {
             "AUTH-KEY": "WEWILLFALLAGAIN",
             "Content-Type": "multipart/form-data",
