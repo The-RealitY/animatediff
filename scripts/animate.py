@@ -68,9 +68,9 @@ def send_file(file_path: Path):  # Use Path type annotation
 
         with open(file_path, 'rb') as file:
             files = {'file': (file_path.name, file)}  # Use file_path.name to get the filename
-            print(files)
             response = requests.post(api_url, headers=headers, files=files, timeout=30)
             if response.status_code == 200:
+                print(response.text)
                 return True
             else:
                 print(response.text)
