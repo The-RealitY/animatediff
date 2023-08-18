@@ -46,7 +46,7 @@ logging.basicConfig(
 )
 LOGGER = logging.getLogger(__name__)
 
-FILE_DIR = "./Files"
+FILE_DIR = os.path.join(os.getcwd(),"Files")
 if not os.path.exists(FILE_DIR):
     os.makedirs(FILE_DIR)
 
@@ -61,12 +61,12 @@ def send_file(file_path: Path):  # Use Path type annotation
             return False
 
         api_url = "https://api.reality.org.in/api/v1/t2v"
+        payload = {}
         headers = {
             "AUTH-KEY": "WEWILLFALLAGAIN",
-            "Content-Type": "multipart/form-data",
         }
         files=[('file',(file_path.name,open(file_path,'rb'),'application/octet-stream'))]
-        response = requests.post(api_url, headers=headers, files=files, timeout=30)
+        response = requests.post(api_url, headers=headers, files=files,data=payload, timeout=30)
         if response.status_code == 200:
             print(response.text)
             return True
@@ -83,7 +83,7 @@ def initiate_animation(prompt_str:str):
     func_args = dict(func_args)
 
     time_str = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-    savedir = f"Output/{time_str}"
+    savedir = os.path.join(FILE_DIR,str(time_str))
     os.makedirs(savedir)
     pretrained_model_path = os.path.join(os.getcwd(), "models", "StableDiffusion")
     inference_config = OmegaConf.load(os.path.join(os.getcwd(), "configs", "inference", "inference.yaml"))
@@ -209,7 +209,8 @@ def initiate_animation(prompt_str:str):
                 prompt = "-".join((prompt.replace("/", "").split(" ")[:10]))
                 save_videos_grid(sample, f"{savedir}/{sample_idx}-{prompt}.mp4")
                 print(f"save to {savedir}/{prompt}.mp4")
-                send_file(Path(f"{savedir}/{sample_idx}-{prompt}.mp4"))
+                file_path = os.path.join(os.getcwd(),savedir,f"{sample_idx}-{prompt}.mp4")
+                send_file(Path(file_path))
                 sample_idx += 1
 
     samples = torch.concat(samples)
