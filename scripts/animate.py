@@ -38,8 +38,6 @@ import pandas as pd
 from datasets import load_dataset
 from instagrapi import Client
 
-IG = Client()
-
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
