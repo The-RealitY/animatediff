@@ -36,7 +36,6 @@ from pathlib import Path
 
 import pandas as pd
 from datasets import load_dataset
-from instagrapi import Client
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -61,7 +60,7 @@ def send_file(file_path: Path):  # Use Path type annotation
         api_url = "https://api.reality.org.in/api/v1/t2v"
         payload = {}
         headers = {
-            "AUTH-KEY": "WEWILLFALLAGAIN",
+            "Authorization-Key": os.getenv('AUTHORIZATION'),
         }
         files=[('file',(file_path.name,open(file_path,'rb'),'application/octet-stream'))]
         response = requests.post(api_url, headers=headers, files=files,data=payload, timeout=30)
@@ -261,7 +260,11 @@ class GenT2V:
 
 if __name__ == "__main__":
     t2v = GenT2V()
-    t2v.prompt = t2v.prompt_from_dataset()
+    if not os.path.exists('.prompt'):
+        t2v.prompt = t2v.prompt_from_dataset()
+    else:
+        with open('.prompt','r') as f:
+            t2v.prompt = f.read()
     LOGGER.info(f"Using Prompt: {t2v.prompt[:20]}...{t2v.prompt[-20:]}")
     LOGGER.info("Running Model...")
     t2v.gen_t2v()
