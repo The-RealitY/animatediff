@@ -260,10 +260,10 @@ class GenT2V:
 
 if __name__ == "__main__":
     t2v = GenT2V()
-    if not os.path.exists(os.path.join(os.getcwd(),'.prompt')):
+    if not os.path.exists(os.path.join('/content','.prompt')):
         t2v.prompt = t2v.prompt_from_dataset()
     else:
-        with open(os.path.join(os.getcwd(),'.prompt'),'r') as f:
+        with open(os.path.join('/content','.prompt'),'r') as f:
             t2v.prompt = f.read()
     LOGGER.info(f"Using Prompt: {t2v.prompt[:20]}...{t2v.prompt[-20:]}")
     LOGGER.info("Running Model...")
