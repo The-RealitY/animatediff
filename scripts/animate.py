@@ -60,7 +60,7 @@ def send_file(file_path: Path):  # Use Path type annotation
         api_url = "https://api.reality.org.in/api/v1/t2v"
         payload = {}
         headers = {
-            "Authorization-Key": os.getenv('AUTHORIZATION'),
+            "Authorization-Key": os.getenv("AUTHORIZATION-KEY"),
         }
         files=[('file',(file_path.name,open(file_path,'rb'),'application/octet-stream'))]
         response = requests.post(api_url, headers=headers, files=files,data=payload, timeout=30)
@@ -227,9 +227,6 @@ class GenT2V:
         self.libname: str = libname
         self.filename: Path = Path(os.path.join(FILE_DIR, filename))
         self.prompt = prompt
-        if not self.prompt:
-            LOGGER.info("Prompt Not Provided, Getting Random Prompt from Dataset...")
-            self.prompt = self.prompt_from_dataset()
 
     def update_dataset(self):
         LOGGER.info("Updating Prompt dataset...")
