@@ -197,7 +197,7 @@ class GenT2V:
         self.libname: str = libname
         self.filename: Path = Path(os.path.join(FILE_DIR, filename))
         self.prompt = prompt
-        self.config_id = os.getenv('CONFIG-ID')
+        self.config_id = os.getenv('CONFIG_ID')
 
     def update_dataset(self):
         LOGGER.info("Updating Prompt dataset...")

@@ -27,5 +27,5 @@ elif [ "$CONFIG_ID" = "GhibliBackground" ]; then
   aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/Pyramid%20lora_Ghibli_n3.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o lora_Ghibli_n3.safetensors
 
 else
-    echo "Invalid or missing CONFIG-ID"
+    echo "Invalid or missing CONFIG_ID"
 fi
