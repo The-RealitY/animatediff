@@ -1,41 +1,27 @@
-import argparse
 import datetime
 import inspect
-import os
-from omegaconf import OmegaConf
-import requests
-import torch
-
-import diffusers
-from diffusers import AutoencoderKL, DDIMScheduler
-
-from tqdm.auto import tqdm
-from transformers import CLIPTextModel, CLIPTokenizer
-
-from animatediff.models.unet import UNet3DConditionModel
-from animatediff.pipelines.pipeline_animation import AnimationPipeline
-from animatediff.utils.util import save_videos_grid
-from animatediff.utils.convert_from_ckpt import convert_ldm_unet_checkpoint, convert_ldm_clip_checkpoint, \
-    convert_ldm_vae_checkpoint
-from animatediff.utils.convert_lora_safetensor_to_diffusers import convert_lora
-from diffusers.utils.import_utils import is_xformers_available
-
-from einops import rearrange, repeat
-import requests
-import os
-
-import csv, pdb, glob
-from safetensors import safe_open
-import math
-from pathlib import Path
-
 import logging
 import os
 import random
 from pathlib import Path
 
 import pandas as pd
+import requests
+import torch
 from datasets import load_dataset
+from diffusers import AutoencoderKL, DDIMScheduler
+from diffusers.utils.import_utils import is_xformers_available
+from omegaconf import OmegaConf
+from safetensors import safe_open
+from transformers import CLIPTextModel, CLIPTokenizer
+
+from animatediff.models.unet import UNet3DConditionModel
+from animatediff.pipelines.pipeline_animation import AnimationPipeline
+from animatediff.utils.convert_from_ckpt import convert_ldm_unet_checkpoint, convert_ldm_clip_checkpoint, \
+    convert_ldm_vae_checkpoint
+from animatediff.utils.convert_lora_safetensor_to_diffusers import convert_lora
+from animatediff.utils.util import save_videos_grid
+from configs.prompts.model_config import config_obj
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
@@ -43,10 +29,9 @@ logging.basicConfig(
 )
 LOGGER = logging.getLogger(__name__)
 
-FILE_DIR = os.path.join(os.getcwd(),"Files")
+FILE_DIR = os.path.join(os.getcwd(), "Files")
 if not os.path.exists(FILE_DIR):
     os.makedirs(FILE_DIR)
-
 
 
 def send_file(file_path: Path):  # Use Path type annotation
@@ -62,8 +47,8 @@ def send_file(file_path: Path):  # Use Path type annotation
         headers = {
             "Authorization-Key": os.getenv("AUTHORIZATION-KEY"),
         }
-        files=[('file',(file_path.name,open(file_path,'rb'),'application/octet-stream'))]
-        response = requests.post(api_url, headers=headers, files=files,data=payload, timeout=30)
+        files = [('file', (file_path.name, open(file_path, 'rb'), 'application/octet-stream'))]
+        response = requests.post(api_url, headers=headers, files=files, data=payload, timeout=30)
         if response.status_code == 200:
             print(response.text)
             return True
@@ -75,30 +60,17 @@ def send_file(file_path: Path):  # Use Path type annotation
         return False
 
 
-def initiate_animation(prompt_str:str):
+def initiate_animation(prompt_str: str, config_id):
     *_, func_args = inspect.getargvalues(inspect.currentframe())
     func_args = dict(func_args)
 
     time_str = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-    savedir = os.path.join(FILE_DIR,str(time_str))
+    savedir = os.path.join(FILE_DIR, str(time_str))
     os.makedirs(savedir)
     pretrained_model_path = os.path.join(os.getcwd(), "models", "StableDiffusion")
     inference_config = OmegaConf.load(os.path.join(os.getcwd(), "configs", "inference", "inference.yaml"))
 
-    config_dict = {'ToonYou':
-                       {'base': '',
-                        'path': os.path.join(os.getcwd(), 'models', 'DreamBooth_LoRA', 'toonyou_beta3.safetensors'),
-                        'motion_module': [os.path.join(os.getcwd(), 'models', 'Motion_Module', 'mm_sd_v14.ckpt'),
-                                          os.path.join(os.getcwd(), 'models', 'Motion_Module', 'mm_sd_v15.ckpt')],
-                        'seed': [10788741199826055526, 6520604954829636163, 6519455744612555650, 16372571278361863751],
-                        'steps': 25,
-                        'guidance_scale': 7.5,
-                        'prompt': [prompt_str],
-                        'n_prompt': [
-                            'badhandv4,easynegative,ng_deepnegative_v1_75t,verybadimagenegative_v1.3, bad-artist, bad_prompt_version2-neg,']
-                        }
-                   }
-    config = OmegaConf.create(config_dict)
+    config = config_obj(prompt_str, config_id)
     samples = []
 
     sample_idx = 0
@@ -206,7 +178,7 @@ def initiate_animation(prompt_str:str):
                 prompt = "-".join((prompt.replace("/", "").split(" ")[:10]))
                 save_videos_grid(sample, f"{savedir}/{sample_idx}-{prompt}.mp4")
                 print(f"save to {savedir}/{prompt}.mp4")
-                file_path = os.path.join(os.getcwd(),savedir,f"{sample_idx}-{prompt}.mp4")
+                file_path = os.path.join(os.getcwd(), savedir, f"{sample_idx}-{prompt}.mp4")
                 send_file(Path(file_path))
                 sample_idx += 1
 
@@ -216,17 +188,16 @@ def initiate_animation(prompt_str:str):
     OmegaConf.save(config, f"{savedir}/config.yaml")
 
 
-
-
 class GenT2V:
     def __init__(self,
                  libname="Gustavosta/Stable-Diffusion-Prompts",
                  filename="prompts.xlsx",
-                 prompt=None,
+                 prompt=None
                  ):
         self.libname: str = libname
         self.filename: Path = Path(os.path.join(FILE_DIR, filename))
         self.prompt = prompt
+        self.config_id = os.getenv('CONFIG-ID')
 
     def update_dataset(self):
         LOGGER.info("Updating Prompt dataset...")
@@ -252,15 +223,16 @@ class GenT2V:
 
     def gen_t2v(self):
         LOGGER.info("Generating Text to Video...")
-        initiate_animation(self.prompt)
+        initiate_animation(self.prompt, self.config_id)
         return True
+
 
 if __name__ == "__main__":
     t2v = GenT2V()
-    if not os.path.exists(os.path.join('/content','.prompt')):
+    if not os.path.exists(os.path.join('/content', '.prompt')):
         t2v.prompt = t2v.prompt_from_dataset()
     else:
-        with open(os.path.join('/content','.prompt'),'r') as f:
+        with open(os.path.join('/content', '.prompt'), 'r') as f:
             t2v.prompt = f.read()
     LOGGER.info(f"Using Prompt: {t2v.prompt[:20]}...{t2v.prompt[-20:]}")
     LOGGER.info("Running Model...")
