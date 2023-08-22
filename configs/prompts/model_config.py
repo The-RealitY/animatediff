@@ -107,7 +107,7 @@ def config_obj(prompt, config_id=None) -> DictConfig:
                                  }
                   }
     GhibliBackground = {'GhibliBackground': {'base': os.path.join(os.getcwd(), 'models', 'DreamBooth_LoRA',
-                                                                  'CounterfeitV30_25.safetensors'),
+                                                                  'CounterfeitV30_30.safetensors'),
                                              'path': os.path.join(os.getcwd(), 'models', 'DreamBooth_LoRA',
                                                                   'lora_Ghibli_n3.safetensors'),
                                              'motion_module': [
