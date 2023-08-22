@@ -1,14 +1,15 @@
 #!/bin/bash
-gdown 1RqkQuGPaCO5sGZ6V6KZ-jUWmsRu48Kdq -O /content/animatediff/models/Motion_Module
-gdown 1ql0g_Ys4UCz2RnokYlBjyOYPbttbIpbu -O /content/animatediff/models/Motion_Module
-wget https://civitai.com/api/download/models/102828 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/57618  -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/90115 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/92475 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/97261 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/50705 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/29460 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/79068 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/71009 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/72396 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
-wget https://civitai.com/api/download/models/78775 -P /content/animatediff/models/DreamBooth_LoRA --content-disposition --no-check-certificate
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/mm_sd_v14.ckpt -d /content/animatediff/models/Motion_Module -o mm_sd_v14.ckpt
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/mm_sd_v15.ckpt -d /content/animatediff/models/Motion_Module -o mm_sd_v15.ckpt
+
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/toonyou_beta3.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o toonyou_beta3.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/CounterfeitV30_v30.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o CounterfeitV30_v30.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/FilmVelvia2.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o FilmVelvia2.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/Pyramid%20lora_Ghibli_n3.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o Pyramid%20lora_Ghibli_n3.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/TUSUN.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o TUSUN.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/lyriel_v16.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o lyriel_v16.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/majicmixRealistic_v5Preview.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o majicmixRealistic_v5Preview.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/moonfilm_filmGrain10.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o moonfilm_filmGrain10.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/moonfilm_reality20.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o moonfilm_reality20.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/rcnzCartoon3d_v10.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o rcnzCartoon3d_v10.safetensors
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/camenduru/AnimateDiff/resolve/main/realisticVisionV20_v20.safetensors -d /content/animatediff/models/DreamBooth_LoRA -o realisticVisionV20_v20.safetensors
