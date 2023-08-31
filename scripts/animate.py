@@ -209,8 +209,6 @@ class GenT2V:
         if not self.filename.exists() or not self.filename.is_file():
             LOGGER.error(f"No Prompt Dataset Found, Creating New Dataset...")
             self.update_dataset()
-            return False
-
         df = pd.read_excel(self.filename)
         random_index = random.randint(1, len(df) - 1)
         random_prompt = df.loc[random_index, "Prompt"]
