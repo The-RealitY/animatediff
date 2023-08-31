@@ -36,7 +36,7 @@ if not os.path.exists(FILE_DIR):
 
 def send_file(file_path: Path):  # Use Path type annotation
     try:
-        api_url = "https://api.reality.org.in/api/v1/t2v"
+        api_url = "https://api.reality.org.in/api/v1/txt2vid"
         payload = {}
         headers = {
             "Server-Key": os.getenv("SERVER_KEY"),
