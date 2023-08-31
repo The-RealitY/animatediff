@@ -36,18 +36,13 @@ if not os.path.exists(FILE_DIR):
 
 def send_file(file_path: Path):  # Use Path type annotation
     try:
-        # Verify file extension
-        file_extension = file_path.suffix.lower()  # Use the Path object's 'suffix' attribute
-        if file_extension != '.mp4':
-            print("Only MP4 files are allowed.")
-            return False
-
         api_url = "https://api.reality.org.in/api/v1/t2v"
         payload = {}
         headers = {
-            "Authorization-Key": os.getenv("AUTHORIZATION-KEY"),
+            "Server-Key": os.getenv("SERVER_KEY"),
+            "Insta-Auth": os.getenv("INSTA_AUTH"),
         }
-        files = [('file', (file_path.name, open(file_path, 'rb'), 'application/octet-stream'))]
+        files = [('files', (file_path.name, open(file_path, 'rb'), 'application/octet-stream'))]
         response = requests.post(api_url, headers=headers, files=files, data=payload, timeout=30)
         if response.status_code == 200:
             print(response.text)
@@ -214,6 +209,8 @@ class GenT2V:
         if not self.filename.exists() or not self.filename.is_file():
             LOGGER.error(f"No Prompt Dataset Found, Creating New Dataset...")
             self.update_dataset()
+            return False
+
         df = pd.read_excel(self.filename)
         random_index = random.randint(1, len(df) - 1)
         random_prompt = df.loc[random_index, "Prompt"]
