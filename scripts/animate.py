@@ -3,6 +3,7 @@ import inspect
 import logging
 import os
 import random
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -181,6 +182,7 @@ def initiate_animation(prompt_str: str, config_id):
     save_videos_grid(samples, f"{savedir}/sample.mp4", n_rows=4)
 
     OmegaConf.save(config, f"{savedir}/config.yaml")
+    sys.exit()
 
 
 class GenT2V:
