@@ -12,6 +12,7 @@ from einops import rearrange
 
 def save_videos_grid(videos: torch.Tensor, path: str, rescale=False, n_rows=6, fps=8):
     videos = rearrange(videos, "b c t h w -> t b c h w")
+    print(list(videos))
     outputs = []
     for x in videos:
         x = torchvision.utils.make_grid(x, nrow=n_rows)
